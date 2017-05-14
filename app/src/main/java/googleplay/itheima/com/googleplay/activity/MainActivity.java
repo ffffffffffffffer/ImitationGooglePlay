@@ -2,7 +2,9 @@ package googleplay.itheima.com.googleplay.activity;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
+import org.xutils.common.util.LogUtil;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
@@ -26,7 +28,13 @@ public class MainActivity extends BaseActivity {
         mToolbar.setTitle("ToolBar");
         mToolbar.setSubtitle("SubToolBar");
         mToolbar.setLogo(R.mipmap.ic_launcher);
-//        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationIcon(R.mipmap.ic_launcher_round);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LogUtil.d("点击了Navigation");
+            }
+        });
     }
 
     /**
