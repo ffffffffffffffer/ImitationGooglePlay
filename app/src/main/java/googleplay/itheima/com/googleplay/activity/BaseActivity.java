@@ -10,7 +10,7 @@ import android.view.Window;
  * @time 2017/5/14 23:16
  * @ProjectName GooglePlay
  * @PackageName googleplay.itheima.com.googleplay
- * @des TODO
+ * @des 基类Activity
  * @SVN_Version: $Rev$
  * @UpdateAuthor: $Author$
  * @UpdateTime: $Date$

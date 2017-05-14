@@ -6,15 +6,31 @@
     android:orientation="vertical"
     >
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_pressed"
+        android:minHeight="?attr/actionBarSize"
+        android:paddingTop="@dimen/tool_bar_top_padding"
+        />
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/dl_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="@dimen/drawer_menu_width"
+            android:layout_height="@dimen/drawer_menu_height"
+            android:layout_gravity="start"
+            android:background="@drawable/btn_pressed"
+            android:orientation="vertical"
             />
-    </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </android.support.v4.widget.DrawerLayout>
 </LinearLayout>
