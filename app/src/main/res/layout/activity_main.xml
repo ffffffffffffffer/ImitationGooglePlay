@@ -11,8 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/btn_pressed"
-        android:minHeight="?attr/actionBarSize"
-        android:paddingTop="@dimen/tool_bar_top_padding"
         />
 
     <android.support.v4.widget.DrawerLayout
@@ -28,9 +26,19 @@
             android:orientation="vertical"
             />
 
-        <FrameLayout
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent">
+
+            <android.support.v4.view.PagerTabStrip
+                android:id="@+id/pagertabstrip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top">
+            </android.support.v4.view.PagerTabStrip>
+
+        </android.support.v4.view.ViewPager>
 
     </android.support.v4.widget.DrawerLayout>
 </LinearLayout>
