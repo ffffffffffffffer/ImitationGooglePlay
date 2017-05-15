@@ -9,6 +9,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup;
 
+import com.astuetz.PagerSlidingTabStrip;
+
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
@@ -26,6 +28,8 @@ public class MainActivity extends BaseActivity {
     DrawerLayout mDrawerLayout;
     @ViewInject(R.id.viewpager)
     ViewPager mViewPager;
+    @ViewInject(R.id.pagersliding)
+    PagerSlidingTabStrip mPagerSlidingTabStrip;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -83,6 +87,8 @@ public class MainActivity extends BaseActivity {
                 return tabArray.length;
             }
         });
+
+        mPagerSlidingTabStrip.setViewPager(mViewPager);
     }
 
     /**
