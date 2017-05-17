@@ -44,12 +44,14 @@ public abstract class BaseFragment extends Fragment {
 //        textView.setTextSize(25);
 //        return textView;
         //创建容器
-        mLoadingUI = new LoadingUI(ResourceUtils.getContext()) {
-            @Override
-            public LoadingEnum onInitData() {
-                return initData();
-            }
-        };
+        if (mLoadingUI == null) {
+            mLoadingUI = new LoadingUI(ResourceUtils.getContext()) {
+                @Override
+                public LoadingEnum onInitData() {
+                    return initData();
+                }
+            };
+        }
         return mLoadingUI;
     }
 

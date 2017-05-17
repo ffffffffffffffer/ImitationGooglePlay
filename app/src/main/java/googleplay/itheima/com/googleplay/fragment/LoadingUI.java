@@ -106,7 +106,6 @@ public abstract class LoadingUI extends FrameLayout {
     }
 
     public void loadData() {
-        LogUtil.d("当前flag:  " + flag);
         if (flag == SUCCESS.getState()) {
             return;
         }
@@ -120,6 +119,7 @@ public abstract class LoadingUI extends FrameLayout {
             public void run() {
                 LoadingEnum loadingEnum = onInitData();
                 flag = loadingEnum.getState();
+                LogUtil.d("当前flag:  " + flag);
                 safeUpdataUI();
             }
         }.start();
