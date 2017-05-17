@@ -12,7 +12,7 @@ public class ToastUtils {
      */
     public static void show(final Activity activity, final String text) {
         if ("main".equalsIgnoreCase(Thread.currentThread().getName())) {
-            Toast.makeText(activity, text, 0).show();
+            Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
         } else {
             activity.runOnUiThread(new Runnable() {
                 @Override

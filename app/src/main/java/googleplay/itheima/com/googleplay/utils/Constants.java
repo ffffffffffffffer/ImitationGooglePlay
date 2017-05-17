@@ -9,4 +9,7 @@ package googleplay.itheima.com.googleplay.utils;
  */
 
 public interface Constants {
+
+    String BASE_SERVER = "http://192.168.1.103:8080/GooglePlayServer/";
+    String HOME_INTERFACE = "home?index=";
 }

@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
 
 import googleplay.itheima.com.googleplay.R;
@@ -62,15 +64,15 @@ public abstract class LoadingUI extends FrameLayout {
 
     private void initView(Context context) {
         if (mLoadingView == null) {
-            mLoadingView = LayoutInflater.from(context).inflate(R.layout.loading_view, null);
+            mLoadingView = LayoutInflater.from(context).inflate(R.layout.loading_view, null, false);
             addView(mLoadingView);
         }
         if (mEmptyView == null) {
-            mEmptyView = LayoutInflater.from(context).inflate(R.layout.empty_view, null);
+            mEmptyView = LayoutInflater.from(context).inflate(R.layout.empty_view, null, false);
             addView(mEmptyView);
         }
         if (mErrorView == null) {
-            mErrorView = LayoutInflater.from(context).inflate(R.layout.error_view, null);
+            mErrorView = LayoutInflater.from(context).inflate(R.layout.error_view, null, false);
             addView(mErrorView);
         }
 
@@ -89,6 +91,10 @@ public abstract class LoadingUI extends FrameLayout {
             }
             mSuccessView.setVisibility(View.VISIBLE);
             //加载成功的view
+            ViewParent parent = mSuccessView.getParent();
+            if (parent instanceof ViewGroup) {
+                ((ViewGroup) parent).removeView(mSuccessView);
+            }
             addView(mSuccessView);
         } else {
             if (mSuccessView != null) {
