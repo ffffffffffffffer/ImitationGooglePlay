@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 
 import googleplay.itheima.com.googleplay.fragment.LoadingUI;
 import googleplay.itheima.com.googleplay.utils.ResourceUtils;
@@ -47,13 +48,24 @@ public abstract class BaseFragment extends Fragment {
         if (mLoadingUI == null) {
             mLoadingUI = new LoadingUI(ResourceUtils.getContext()) {
                 @Override
+                protected View onSuccessView() {
+                    return successView();
+                }
+
+                @Override
                 public LoadingEnum onInitData() {
                     return initData();
                 }
             };
+        } else {
+            ViewParent parent = mLoadingUI.getParent();
+            if (parent instanceof ViewGroup) {
+                ((ViewGroup) parent).removeView(mLoadingUI);
+            }
         }
         return mLoadingUI;
     }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -70,4 +82,7 @@ public abstract class BaseFragment extends Fragment {
 
     //我只是基类,并不知道具体怎么实现
     public abstract LoadingUI.LoadingEnum initData();
+
+    //成功后显示的View
+    protected abstract View successView();
 }

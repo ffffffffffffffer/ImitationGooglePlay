@@ -9,8 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import org.xutils.common.util.LogUtil;
-
 import googleplay.itheima.com.googleplay.R;
 import googleplay.itheima.com.googleplay.utils.ResourceUtils;
 
@@ -86,14 +84,32 @@ public abstract class LoadingUI extends FrameLayout {
         mErrorView.setVisibility(flag == ERROR.getState() ? View.VISIBLE : View.INVISIBLE);
         if (flag == SUCCESS.getState()) {
             if (mSuccessView == null) {
-                //加载布局 TODO: 2017/5/17
+                //加载布局
+                mSuccessView = onSuccessView();
             }
-            //mSuccessView.setVisibility(View.VISIBLE);
-            //加载成功的view TODO: 2017/5/17
+            mSuccessView.setVisibility(View.VISIBLE);
+            //加载成功的view
+            addView(mSuccessView);
         } else {
-            //mSuccessView.setVisibility(View.INVISIBLE);
+            if (mSuccessView != null) {
+                mSuccessView.setVisibility(View.INVISIBLE);
+            }
         }
     }
+
+    /**
+     * 访问成功显示View,要给具体的类实现
+     *
+     * @return 返回显示的View
+     */
+    protected abstract View onSuccessView();
+
+    /**
+     * 只有调用者才知道当前要干什么
+     *
+     * @return LoadingEnum 用来控制显示的View
+     */
+    public abstract LoadingEnum onInitData();
 
     //安全地更新ui
     public void safeUpdataUI() {
@@ -119,7 +135,6 @@ public abstract class LoadingUI extends FrameLayout {
             public void run() {
                 LoadingEnum loadingEnum = onInitData();
                 flag = loadingEnum.getState();
-                LogUtil.d("当前flag:  " + flag);
                 safeUpdataUI();
             }
         }.start();
@@ -161,6 +176,5 @@ public abstract class LoadingUI extends FrameLayout {
 //        return view;
 //    }
 
-    //只有调用者才知道当前要干什么
-    public abstract LoadingEnum onInitData();
+
 }
