@@ -12,10 +12,6 @@ import org.xutils.x;
  * @ProjectName GooglePlay
  * @PackageName googleplay.itheima.com.googleplay
  * @des 基类Application
- * @SVN_Version: $Rev$
- * @UpdateAuthor: $Author$
- * @UpdateTime: $Date$
- * @UpdateDes: TODO
  */
 
 public class BaseApplication extends Application {

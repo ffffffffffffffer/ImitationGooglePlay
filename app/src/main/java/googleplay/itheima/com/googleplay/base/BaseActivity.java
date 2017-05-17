@@ -11,10 +11,6 @@ import android.view.Window;
  * @ProjectName GooglePlay
  * @PackageName googleplay.itheima.com.googleplay
  * @des 基类Activity
- * @SVN_Version: $Rev$
- * @UpdateAuthor: $Author$
- * @UpdateTime: $Date$
- * @UpdateDes: TODO
  */
 
 public class BaseActivity extends AppCompatActivity {

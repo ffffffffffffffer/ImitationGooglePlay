@@ -12,10 +12,6 @@ import googleplay.itheima.com.googleplay.BaseApplication;
  * @ProjectName GooglePlay
  * @PackageName googleplay.itheima.com.googleplay.utils
  * @des 资源工具类
- * @SVN_Version: $Rev$
- * @UpdateAuthor: $Author$
- * @UpdateTime: $Date$
- * @UpdateDes: TODO
  */
 
 public class ResourceUtils {

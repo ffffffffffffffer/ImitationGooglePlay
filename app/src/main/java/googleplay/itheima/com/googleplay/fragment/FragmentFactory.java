@@ -1,6 +1,6 @@
 package googleplay.itheima.com.googleplay.fragment;
 
-import android.support.v4.app.Fragment;
+import googleplay.itheima.com.googleplay.base.BaseFragment;
 
 /**
  * @author TanJJ
@@ -8,15 +8,11 @@ import android.support.v4.app.Fragment;
  * @ProjectName GooglePlay
  * @PackageName googleplay.itheima.com.googleplay.fragment
  * @des Fragment的工厂
- * @SVN_Version: $Rev$
- * @UpdateAuthor: $Author$
- * @UpdateTime: $Date$
- * @UpdateDes: TODO
  */
 
 public class FragmentFactory {
-    public static Fragment get(int position) {
-        Fragment fragment = null;
+    public static BaseFragment get(int position) {
+        BaseFragment fragment = null;
         switch (position) {
             case 0:
                 fragment = new HomeFragment();

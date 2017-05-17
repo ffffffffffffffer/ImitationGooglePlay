@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import googleplay.itheima.com.googleplay.fragment.LoadingUI;
+import googleplay.itheima.com.googleplay.utils.ResourceUtils;
 
 /**
  * @author TanJJ
@@ -15,13 +16,11 @@ import googleplay.itheima.com.googleplay.fragment.LoadingUI;
  * @ProjectName GooglePlay
  * @PackageName googleplay.itheima.com.googleplay.fragment
  * @des 基类Fragment
- * @SVN_Version: $Rev$
- * @UpdateAuthor: $Author$
- * @UpdateTime: $Date$
- * @UpdateDes: TODO
  */
 
-public class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment {
+
+    private LoadingUI mLoadingUI;
 
     @Nullable
     @Override
@@ -45,7 +44,28 @@ public class BaseFragment extends Fragment {
 //        textView.setTextSize(25);
 //        return textView;
         //创建容器
-        LoadingUI loadingUI = new LoadingUI(getContext());
-        return loadingUI.getRootView();
+        mLoadingUI = new LoadingUI(ResourceUtils.getContext()) {
+            @Override
+            public LoadingEnum onInitData() {
+                return initData();
+            }
+        };
+        return mLoadingUI;
     }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        loadDate();
+    }
+
+    public void loadDate() {
+        if (mLoadingUI != null) {
+            mLoadingUI.loadData();
+        }
+    }
+
+
+    //我只是基类,并不知道具体怎么实现
+    public abstract LoadingUI.LoadingEnum initData();
 }

@@ -6,10 +6,6 @@ package googleplay.itheima.com.googleplay.utils;
  * @ProjectName GooglePlay
  * @PackageName googleplay.itheima.com.googleplay.utils
  * @des 存放常量
- * @SVN_Version: $Rev$
- * @UpdateAuthor: $Author$
- * @UpdateTime: $Date$
- * @UpdateDes: TODO
  */
 
 public interface Constants {
