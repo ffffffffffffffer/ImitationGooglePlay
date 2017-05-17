@@ -1,5 +1,7 @@
 package googleplay.itheima.com.googleplay.fragment;
 
+import android.util.SparseArray;
+
 import googleplay.itheima.com.googleplay.base.BaseFragment;
 
 /**
@@ -11,33 +13,39 @@ import googleplay.itheima.com.googleplay.base.BaseFragment;
  */
 
 public class FragmentFactory {
+    //使用稀疏算法来保存Fragment
+    private static SparseArray<BaseFragment> mSparseArray = new SparseArray<>();
+
+
     public static BaseFragment get(int position) {
-        BaseFragment fragment = null;
-        switch (position) {
-            case 0:
-                fragment = new HomeFragment();
-            case 1:
-                fragment = new HomeFragment();
-                break;
-            case 2:
-                fragment = new HomeFragment();
-                break;
-            case 3:
-                fragment = new HomeFragment();
-                break;
-            case 4:
-                fragment = new HomeFragment();
-                break;
-            case 5:
-                fragment = new HomeFragment();
-                break;
-            case 6:
-                fragment = new HomeFragment();
-                break;
-            case 7:
-                fragment = new HomeFragment();
-                break;
+        if (mSparseArray.get(position) == null) {
+            switch (position) {
+                case 0:
+                    mSparseArray.append(position, new HomeFragment());
+                    break;
+                case 1:
+                    mSparseArray.append(position, new HomeFragment());
+                    break;
+                case 2:
+                    mSparseArray.append(position, new HomeFragment());
+                    break;
+                case 3:
+                    mSparseArray.append(position, new HomeFragment());
+                    break;
+                case 4:
+                    mSparseArray.append(position, new HomeFragment());
+                    break;
+                case 5:
+                    mSparseArray.append(position, new HomeFragment());
+                    break;
+                case 6:
+                    mSparseArray.append(position, new HomeFragment());
+                    break;
+                case 7:
+                    mSparseArray.append(position, new HomeFragment());
+                    break;
+            }
         }
-        return fragment;
+        return mSparseArray.get(position);
     }
 }
