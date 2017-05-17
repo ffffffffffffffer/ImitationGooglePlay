@@ -11,7 +11,6 @@ import java.util.List;
  */
 
 public class HomeBean {
-
     private List<String> picture;
     private List<ListBean> list;
 
@@ -47,7 +46,7 @@ public class HomeBean {
         private String name;
         private String packageName;
         private String iconUrl;
-        private int stars;
+        private float stars;
         private int size;
         private String downloadUrl;
         private String des;
@@ -84,11 +83,11 @@ public class HomeBean {
             this.iconUrl = iconUrl;
         }
 
-        public int getStars() {
+        public float getStars() {
             return stars;
         }
 
-        public void setStars(int stars) {
+        public void setStars(float stars) {
             this.stars = stars;
         }
 

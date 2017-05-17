@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -14,6 +16,8 @@ import org.xutils.common.Callback;
 import org.xutils.common.util.LogUtil;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
+
+import java.util.List;
 
 import googleplay.itheima.com.googleplay.R;
 import googleplay.itheima.com.googleplay.base.BaseFragment;
@@ -36,6 +40,7 @@ public class HomeFragment extends BaseFragment {
     private String serverAddress = Constants.BASE_SERVER + Constants.HOME_INTERFACE;
     private final int accessTime = 5000;
     private LoadingUI.LoadingEnum mSuccess = LoadingUI.LoadingEnum.LOADING;
+    private List<HomeBean.ListBean> mList;
 
     @Override
     public LoadingUI.LoadingEnum initData() {
@@ -96,6 +101,7 @@ public class HomeFragment extends BaseFragment {
     private void gsonDecode(String result) {
         Gson gson = new Gson();
         HomeBean homeBean = gson.fromJson(result, HomeBean.class);
+        mList = homeBean.getList();
     }
 
     @Override
@@ -125,25 +131,53 @@ public class HomeFragment extends BaseFragment {
             @Override
             public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
                 if (holder instanceof TextHolder) {
-                    ((TextHolder) holder).mTextView.setText(strings[position % strings.length]);
-                    ((TextHolder) holder).mTextView.setTextColor(Color.BLACK);
-                    ((TextHolder) holder).mTextView.setTextSize(25);
+                    TextHolder textHolder = ((TextHolder) holder);
+                    //设置数据
+                    HomeBean.ListBean listBean = mList.get(position);
+                    //设置标题
+                    textHolder.mTextView_name.setText(listBean.getName());
+                    textHolder.mTextView_name.setTextColor(Color.BLACK);
+                    textHolder.mTextView_name.setTextSize(16);
+                    //设置大小
+                    textHolder.mTextView_size.setText(android.text.format.Formatter.formatFileSize(ResourceUtils
+                            .getContext(), listBean.getSize()));
+                    textHolder.mTextView_size.setTextColor(Color.GRAY);
+                    //设置介绍
+                    textHolder.mTextView_des.setText(listBean.getDes());
+                    textHolder.mTextView_des.setTextColor(Color.GRAY);
+                    //靠,设置了cardView背景色后全部文本都要设置字体颜色
+                    textHolder.mTextView_download.setTextColor(Color.GRAY);
+
+                    //设置星星 // TODO: 2017/5/17
+                    //设置图片 // TODO: 2017/5/17  
                 }
             }
 
             @Override
             public int getItemCount() {
-                return strings.length * 5;
+                return mList.size();
             }
 
 
             class TextHolder extends RecyclerView.ViewHolder {
 
-                private TextView mTextView;
+                private TextView mTextView_name;
+                private final ImageView mImageView_download;
+                private final ImageView mImageView_logo;
+                private final RatingBar mRatingBar;
+                private final TextView mTextView_download;
+                private final TextView mTextView_des;
+                private final TextView mTextView_size;
 
                 public TextHolder(View itemView) {
                     super(itemView);
-                    mTextView = (TextView) itemView.findViewById(R.id.tv);
+                    mTextView_name = (TextView) itemView.findViewById(R.id.tv_name);
+                    mImageView_download = (ImageView) itemView.findViewById(R.id.iv_download_image);
+                    mImageView_logo = (ImageView) itemView.findViewById(R.id.image_logo);
+                    mRatingBar = (RatingBar) itemView.findViewById(R.id.ratingbar_star);
+                    mTextView_download = (TextView) itemView.findViewById(R.id.textview_download);
+                    mTextView_des = (TextView) itemView.findViewById(R.id.textview_des);
+                    mTextView_size = (TextView) itemView.findViewById(R.id.textview_size);
                 }
             }
         });
