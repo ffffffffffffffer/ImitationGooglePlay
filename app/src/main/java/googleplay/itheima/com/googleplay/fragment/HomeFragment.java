@@ -148,8 +148,12 @@ public class HomeFragment extends BaseFragment {
                     //靠,设置了cardView背景色后全部文本都要设置字体颜色
                     textHolder.mTextView_download.setTextColor(Color.GRAY);
 
-                    //设置星星 // TODO: 2017/5/17
-                    //设置图片 // TODO: 2017/5/17  
+                    //设置星星 //
+                    textHolder.mRatingBar.setProgress((int) listBean.getStars());
+                    textHolder.mRatingBar.setRating(listBean.getStars());
+                    //设置图片 //
+                    x.image().bind(textHolder.mImageView_logo, Constants.BASE_SERVER + Constants.IMAGE_INTERFACE +
+                            listBean.getIconUrl());
                 }
             }
 
