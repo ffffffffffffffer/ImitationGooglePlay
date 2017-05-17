@@ -12,5 +12,5 @@ package googleplay.itheima.com.googleplay.utils;
  * @UpdateDes: TODO
  */
 
-public class Constants {
+public interface Constants {
 }

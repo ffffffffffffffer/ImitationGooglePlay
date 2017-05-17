@@ -18,7 +18,6 @@ import org.xutils.x;
 import googleplay.itheima.com.googleplay.R;
 import googleplay.itheima.com.googleplay.base.BaseActivity;
 import googleplay.itheima.com.googleplay.fragment.FragmentFactory;
-import googleplay.itheima.com.googleplay.utils.ToastUtils;
 
 @ContentView(R.layout.activity_main)
 public class MainActivity extends BaseActivity {
@@ -69,7 +68,6 @@ public class MainActivity extends BaseActivity {
             @Override
             public void destroyItem(ViewGroup container, int position, Object object) {
                 super.destroyItem(container, position, object);
-                ToastUtils.show(MainActivity.this, "销毁了" + position);
             }
 
             @Override

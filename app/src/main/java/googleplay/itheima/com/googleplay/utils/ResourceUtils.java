@@ -2,6 +2,7 @@ package googleplay.itheima.com.googleplay.utils;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 
 import googleplay.itheima.com.googleplay.BaseApplication;
 
@@ -32,6 +33,16 @@ public class ResourceUtils {
     //获取包名
     public static String getPackageName() {
         return getContext().getPackageName();
+    }
+
+    //获取统一的Handler
+    public static Handler getHandler() {
+        return BaseApplication.getHandler();
+    }
+
+    //执行post
+    public static void post(Runnable task) {
+        getHandler().post(task);
     }
 
 }

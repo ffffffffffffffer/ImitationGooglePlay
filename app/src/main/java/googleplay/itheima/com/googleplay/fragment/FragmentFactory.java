@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
  * @time 2017/5/15 9:36
  * @ProjectName GooglePlay
  * @PackageName googleplay.itheima.com.googleplay.fragment
- * @des TODO
+ * @des Fragment的工厂
  * @SVN_Version: $Rev$
  * @UpdateAuthor: $Author$
  * @UpdateTime: $Date$
