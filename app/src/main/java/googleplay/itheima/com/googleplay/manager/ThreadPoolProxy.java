@@ -22,6 +22,11 @@ public class ThreadPoolProxy {
     private final long keepAliveTime;
     private ThreadPoolExecutor mExecutor;
 
+    /**
+     * @param corePoolSize    线程池大小
+     * @param maximumPoolSize 线程池最大大小
+     * @param keepAliveTime   存活时间(秒)
+     */
     ThreadPoolProxy(int corePoolSize,
                     int maximumPoolSize,
                     long keepAliveTime) {
