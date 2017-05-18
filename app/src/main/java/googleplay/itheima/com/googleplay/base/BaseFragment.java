@@ -85,4 +85,11 @@ public abstract class BaseFragment extends Fragment {
 
     //成功后显示的View
     protected abstract View successView();
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        //清除线程任务
+        mLoadingUI.removeThreadPoolTask();
+    }
 }

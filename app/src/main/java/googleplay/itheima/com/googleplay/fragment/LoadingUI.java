@@ -12,6 +12,7 @@ import android.view.ViewParent;
 import android.widget.FrameLayout;
 
 import googleplay.itheima.com.googleplay.R;
+import googleplay.itheima.com.googleplay.manager.ThreadPoolManager;
 import googleplay.itheima.com.googleplay.utils.ResourceUtils;
 
 import static googleplay.itheima.com.googleplay.fragment.LoadingUI.LoadingEnum.EMPTY;
@@ -47,6 +48,7 @@ public abstract class LoadingUI extends FrameLayout {
     private static final int EMPTY_STATE = 1;
     private static final int ERROR_STATE = 2;
     private static final int SUCCESS_STATE = 3;
+    private TaskRunnable mTask;
 
     public LoadingUI(@NonNull Context context) {
         super(context);
@@ -135,15 +137,36 @@ public abstract class LoadingUI extends FrameLayout {
         flag = LOADING.getState();
         safeUpdataUI();
 
-        //开启子线程去加载数据
-        new Thread() {
-            @Override
-            public void run() {
-                LoadingEnum loadingEnum = onInitData();
-                flag = loadingEnum.getState();
-                safeUpdataUI();
-            }
-        }.start();
+        //使用线程池
+//        ExecutorService executorService = Executors.newFixedThreadPool(3);
+//        //开启子线程去加载数据
+//        executorService.submit(new Runnable() {
+//            @Override
+//            public void run() {
+//                LoadingEnum loadingEnum = onInitData();
+//                flag = loadingEnum.getState();
+//                safeUpdataUI();
+//
+//            }
+//        });
+
+        //使用线程管理来创建线程池
+        mTask = new TaskRunnable();
+        ThreadPoolManager.getLongThread().submit(mTask);
+    }
+
+    public void removeThreadPoolTask() {
+        ThreadPoolManager.getLongThread().remove(mTask);
+    }
+
+    private class TaskRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            LoadingEnum loadingEnum = onInitData();
+            flag = loadingEnum.getState();
+            safeUpdataUI();
+        }
     }
 
 

@@ -22,6 +22,7 @@ import java.util.List;
 import googleplay.itheima.com.googleplay.R;
 import googleplay.itheima.com.googleplay.base.BaseFragment;
 import googleplay.itheima.com.googleplay.bean.HomeBean;
+import googleplay.itheima.com.googleplay.manager.ThreadPoolManager;
 import googleplay.itheima.com.googleplay.utils.Constants;
 import googleplay.itheima.com.googleplay.utils.ResourceUtils;
 import googleplay.itheima.com.googleplay.utils.ToastUtils;
@@ -41,6 +42,7 @@ public class HomeFragment extends BaseFragment {
     private final int accessTime = 5000;
     private LoadingUI.LoadingEnum mSuccess = LoadingUI.LoadingEnum.LOADING;
     private List<HomeBean.ListBean> mList;
+    private TaskRunnable mTask;
 
     @Override
     public LoadingUI.LoadingEnum initData() {
@@ -59,18 +61,12 @@ public class HomeFragment extends BaseFragment {
             public void onSuccess(String result) {
                 mSuccess = LoadingUI.LoadingEnum.SUCCESS;
                 gsonDecode(result);
-                new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(1500);
-                            loadDate();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }.start();
+                //使用线程池
+                mTask = new TaskRunnable();
+                ThreadPoolManager.getLongThread().submit(mTask);
+                ThreadPoolManager.getLongThread().remove(mTask);
             }
+
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
@@ -96,6 +92,25 @@ public class HomeFragment extends BaseFragment {
             }
         });
         return mSuccess;
+    }
+
+    class TaskRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(1500);
+                loadDate();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ThreadPoolManager.getLongThread().remove(mTask);
     }
 
     private void gsonDecode(String result) {
