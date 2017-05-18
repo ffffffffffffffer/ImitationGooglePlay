@@ -5,12 +5,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.xutils.common.Callback;
 import org.xutils.common.util.LogUtil;
@@ -134,74 +135,110 @@ public class HomeFragment extends BaseFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 //        GridLayoutManager layoutManager = new GridLayoutManager(ResourceUtils.getContext(), 2);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(new RecyclerView.Adapter() {
+
+        CommonAdapter adapter = new CommonAdapter<HomeBean.ListBean>(ResourceUtils.getContext(), R.layout
+                .home_item_recyclerview, mList) {
             @Override
-            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                View inflate = LayoutInflater.from(ResourceUtils.getContext()).inflate(R.layout
-                        .home_item_recyclerview, parent, false);
+            protected void convert(ViewHolder textHolder, HomeBean.ListBean listBean, int position) {
+                //获取View
+                TextView textView_name = textHolder.getView(R.id.tv_name);
+                TextView textView_download = textHolder.getView(R.id.textview_download);
+                TextView textView_des = textHolder.getView(R.id.textview_des);
+                TextView textView_size = textHolder.getView(R.id.textview_size);
+                ImageView imageview_download = textHolder.getView(R.id.iv_download_image);
+                ImageView imageview_logo = textHolder.getView(R.id.image_logo);
+                RatingBar ratingBar_stars = textHolder.getView(R.id.ratingbar_star);
 
-                return new TextHolder(inflate);
+                //设置标题
+                textView_name.setText(listBean.getName());
+                textView_name.setTextColor(Color.BLACK);
+                textView_name.setTextSize(16);
+                //设置大小
+                textView_size.setText(android.text.format.Formatter.formatFileSize(ResourceUtils
+                        .getContext(), listBean.getSize()));
+                textView_size.setTextColor(Color.GRAY);
+                //设置介绍
+                textView_des.setText(listBean.getDes());
+                textView_des.setTextColor(Color.GRAY);
+                //靠,设置了cardView背景色后全部文本都要设置字体颜色
+                textView_download.setTextColor(Color.GRAY);
+
+                //设置星星 //
+                ratingBar_stars.setProgress((int) listBean.getStars());
+                ratingBar_stars.setRating(listBean.getStars());
+                //设置图片 //
+                x.image().bind(imageview_logo, Constants.BASE_SERVER + Constants.IMAGE_INTERFACE +
+                        listBean.getIconUrl());
             }
-
-            @Override
-            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                if (holder instanceof TextHolder) {
-                    TextHolder textHolder = ((TextHolder) holder);
-                    //设置数据
-                    HomeBean.ListBean listBean = mList.get(position);
-                    //设置标题
-                    textHolder.mTextView_name.setText(listBean.getName());
-                    textHolder.mTextView_name.setTextColor(Color.BLACK);
-                    textHolder.mTextView_name.setTextSize(16);
-                    //设置大小
-                    textHolder.mTextView_size.setText(android.text.format.Formatter.formatFileSize(ResourceUtils
-                            .getContext(), listBean.getSize()));
-                    textHolder.mTextView_size.setTextColor(Color.GRAY);
-                    //设置介绍
-                    textHolder.mTextView_des.setText(listBean.getDes());
-                    textHolder.mTextView_des.setTextColor(Color.GRAY);
-                    //靠,设置了cardView背景色后全部文本都要设置字体颜色
-                    textHolder.mTextView_download.setTextColor(Color.GRAY);
-
-                    //设置星星 //
-                    textHolder.mRatingBar.setProgress((int) listBean.getStars());
-                    textHolder.mRatingBar.setRating(listBean.getStars());
-                    //设置图片 //
-                    x.image().bind(textHolder.mImageView_logo, Constants.BASE_SERVER + Constants.IMAGE_INTERFACE +
-                            listBean.getIconUrl());
-                }
-            }
-
-            @Override
-            public int getItemCount() {
-                return mList.size();
-            }
-
-
-            class TextHolder extends RecyclerView.ViewHolder {
-
-                private TextView mTextView_name;
-                private final ImageView mImageView_download;
-                private final ImageView mImageView_logo;
-                private final RatingBar mRatingBar;
-                private final TextView mTextView_download;
-                private final TextView mTextView_des;
-                private final TextView mTextView_size;
-
-                public TextHolder(View itemView) {
-                    super(itemView);
-                    mTextView_name = (TextView) itemView.findViewById(R.id.tv_name);
-                    mImageView_download = (ImageView) itemView.findViewById(R.id.iv_download_image);
-                    mImageView_logo = (ImageView) itemView.findViewById(R.id.image_logo);
-                    mRatingBar = (RatingBar) itemView.findViewById(R.id.ratingbar_star);
-                    mTextView_download = (TextView) itemView.findViewById(R.id.textview_download);
-                    mTextView_des = (TextView) itemView.findViewById(R.id.textview_des);
-                    mTextView_size = (TextView) itemView.findViewById(R.id.textview_size);
-                }
-            }
-        });
-
-
+        };
+        //设置Adapter
+        recyclerView.setAdapter(adapter);
         return mInflate;
+//        recyclerView.setAdapter(new RecyclerView.Adapter() {
+//            @Override
+//            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+//                View inflate = LayoutInflater.from(ResourceUtils.getContext()).inflate(R.layout
+//                        .home_item_recyclerview, parent, false);
+//
+//                return new TextHolder(inflate);
+//            }
+//
+//            @Override
+//            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+//                if (holder instanceof TextHolder) {
+//                    TextHolder textHolder = ((TextHolder) holder);
+//                    //设置数据
+//                    HomeBean.ListBean listBean = mList.get(position);
+//                    //设置标题
+//                    textHolder.mTextView_name.setText(listBean.getName());
+//                    textHolder.mTextView_name.setTextColor(Color.BLACK);
+//                    textHolder.mTextView_name.setTextSize(16);
+//                    //设置大小
+//                    textHolder.mTextView_size.setText(android.text.format.Formatter.formatFileSize(ResourceUtils
+//                            .getContext(), listBean.getSize()));
+//                    textHolder.mTextView_size.setTextColor(Color.GRAY);
+//                    //设置介绍
+//                    textHolder.mTextView_des.setText(listBean.getDes());
+//                    textHolder.mTextView_des.setTextColor(Color.GRAY);
+//                    //靠,设置了cardView背景色后全部文本都要设置字体颜色
+//                    textHolder.mTextView_download.setTextColor(Color.GRAY);
+//
+//                    //设置星星 //
+//                    textHolder.mRatingBar.setProgress((int) listBean.getStars());
+//                    textHolder.mRatingBar.setRating(listBean.getStars());
+//                    //设置图片 //
+//                    x.image().bind(textHolder.mImageView_logo, Constants.BASE_SERVER + Constants.IMAGE_INTERFACE +
+//                            listBean.getIconUrl());
+//                }
+//            }
+//
+//            @Override
+//            public int getItemCount() {
+//                return mList.size();
+//            }
+//
+//
+//            class TextHolder extends RecyclerView.ViewHolder {
+//
+//                private TextView mTextView_name;
+//                private final ImageView mImageView_download;
+//                private final ImageView mImageView_logo;
+//                private final RatingBar mRatingBar;
+//                private final TextView mTextView_download;
+//                private final TextView mTextView_des;
+//                private final TextView mTextView_size;
+//
+//                public TextHolder(View itemView) {
+//                    super(itemView);
+//                    mTextView_name = (TextView) itemView.findViewById(R.id.tv_name);
+//                    mImageView_download = (ImageView) itemView.findViewById(R.id.iv_download_image);
+//                    mImageView_logo = (ImageView) itemView.findViewById(R.id.image_logo);
+//                    mRatingBar = (RatingBar) itemView.findViewById(R.id.ratingbar_star);
+//                    mTextView_download = (TextView) itemView.findViewById(R.id.textview_download);
+//                    mTextView_des = (TextView) itemView.findViewById(R.id.textview_des);
+//                    mTextView_size = (TextView) itemView.findViewById(R.id.textview_size);
+//                }
+//            }
+//        });
     }
 }
