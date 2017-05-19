@@ -279,8 +279,8 @@ public class HomeFragment extends BaseFragment {
 
     private void initAdapter() {
         mAdapter = new HomePullToRefreshAdapter(R.layout.home_item_recyclerview, mList);
-        //通过调用下面方法设置加载更多的布局,现在是以library导入,不能修改代码,可以通过导入Module方法来修改代码
-        //mAdapter.setLoadMoreView(new SimpleLoadMoreView());
+        //通过调用下面方法设置加载更多的布局,可以定义一个类去继承LoadMoreView并且实现抽象方法就可以自定义布局了
+//        mAdapter.setLoadMoreView(new SimpleLoadMoreView());
         //设置加载更多的逻辑
         mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
