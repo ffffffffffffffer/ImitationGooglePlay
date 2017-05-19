@@ -1,17 +1,12 @@
 package googleplay.itheima.com.googleplay.fragment;
 
-import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RatingBar;
-import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
-import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.xutils.common.Callback;
 import org.xutils.common.util.LogUtil;
@@ -21,6 +16,7 @@ import org.xutils.x;
 import java.util.List;
 
 import googleplay.itheima.com.googleplay.R;
+import googleplay.itheima.com.googleplay.adapter.HomePullToRefreshAdapter;
 import googleplay.itheima.com.googleplay.base.BaseFragment;
 import googleplay.itheima.com.googleplay.bean.HomeBean;
 import googleplay.itheima.com.googleplay.utils.Constants;
@@ -36,37 +32,62 @@ import googleplay.itheima.com.googleplay.utils.ToastUtils;
  */
 
 public class HomeFragment extends BaseFragment {
+    //总共要加载的条目
+    private static final int TOTAL_COUNTER = 60;
     //HomeView
     private View mInflate;
     private String serverAddress = Constants.BASE_SERVER + Constants.HOME_INTERFACE;
     private final int accessTime = 5000;
+    //加载更多时间
+    private final int DELAYED = 3000;
     private LoadingUI.LoadingEnum mSuccess = LoadingUI.LoadingEnum.LOADING;
+    //主页要显示的内容集合
     private List<HomeBean.ListBean> mList;
+    //网络访问条目条件
+    private int index = 0;
+    //访问时机
+    private int state = LOADING_DATA;
+    private static final int LOADING_DATA = 0;
+    private static final int LOAD_MORE = 1;
+    private HomePullToRefreshAdapter mAdapter;
+    private RecyclerView mRecyclerView;
+    private int mCurrentCounter;
+    private boolean isErr;
+
 //    private TaskRunnable mTask;
 
     @Override
     public LoadingUI.LoadingEnum initData() {
-//        LoadingUI.LoadingEnum[] enums = {LoadingUI.LoadingEnum.ERROR, LoadingUI.LoadingEnum.EMPTY
+        return requestData(index, state);
+
+    }
+
+    private LoadingUI.LoadingEnum requestData(int index, final int state) {
+        //        LoadingUI.LoadingEnum[] enums = {LoadingUI.LoadingEnum.ERROR, LoadingUI.LoadingEnum.EMPTY
 //                , LoadingUI.LoadingEnum.SUCCESS};
 //
 //        Random random = new Random();
 //        return enums[random.nextInt(3)];
 
         //网络访问
-        RequestParams entity = new RequestParams(serverAddress + 0);
+        RequestParams entity = new RequestParams(serverAddress + index);
         entity.setConnectTimeout(accessTime);
         entity.setReadTimeout(accessTime);
         x.http().get(entity, new Callback.CacheCallback<String>() {
             @Override
             public void onSuccess(String result) {
-                mSuccess = LoadingUI.LoadingEnum.SUCCESS;
-                gsonDecode(result);
-                //使用线程池
+                if (state == LOADING_DATA) {
+                    mSuccess = LoadingUI.LoadingEnum.SUCCESS;
+                    gsonDecode(result, state);
+                    //使用线程池
 //                mTask = new TaskRunnable();
 //                ThreadPoolManager.getLongThread().submit(mTask);
 
-                //没必再开线程了
-                loadDate();
+                    //没必再开线程了
+                    loadDate();
+                } else if (state == LOAD_MORE) {
+                    gsonDecode(result, state);
+                }
             }
 
 
@@ -117,66 +138,77 @@ public class HomeFragment extends BaseFragment {
 //        ThreadPoolManager.getLongThread().remove(mTask);
     }
 
-    private void gsonDecode(String result) {
+    /**
+     * 解析gson格式数据
+     *
+     * @param result gson数据
+     * @param state  调用解析方法的时间
+     */
+    private void gsonDecode(String result, int state) {
         Gson gson = new Gson();
-        HomeBean homeBean = gson.fromJson(result, HomeBean.class);
-        mList = homeBean.getList();
+        final HomeBean homeBean = gson.fromJson(result, HomeBean.class);
+        final List<HomeBean.ListBean> list = homeBean.getList();
+        if (state == LOADING_DATA) {
+            mList = list;
+        } else if (state == LOAD_MORE) {
+            if (mAdapter != null) {
+                //让加载时间久一点
+                ResourceUtils.getHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mCurrentCounter >= TOTAL_COUNTER) {
+                            //数据全部加载完毕
+                            mAdapter.loadMoreEnd();
+                        } else {
+                            if (list.size() > 0) {
+                                //if(isErr){
+                                //设置数据进集合中
+                                mList.addAll(list);
+                                //#### 对于该BaseRecyclerViewAdapterHelper开源项目来讲,下面两个方法非常重要,能不能加载跟多就看它们了 #####
+                                //把要新增的数据添加到Adapter内部维护的List集合中
+                                mAdapter.addData(list);
+                                //成功获取更多数据
+                                mCurrentCounter = mAdapter.getData().size();
+                                //加载完成,刷新
+                                mAdapter.loadMoreComplete();
+                                //################################################
+                            } else {
+                                //获取更多数据失败
+                                isErr = true;
+                                ToastUtils.show(getActivity(), ResourceUtils.getContext().getString(R.string
+                                        .load_error));
+                                mAdapter.loadMoreFail();
+
+                            }
+                        }
+                    }
+                }, DELAYED);
+            }
+        }
     }
 
     @Override
     protected View successView() {
         mInflate = LayoutInflater.from(ResourceUtils.getContext()).inflate(R.layout.home_fragment, null, false);
-//        TextView textView= (TextView) mInflate.findViewById(R.id.tv);
+//        TextView textView= (TextView)Inflate.findViewById(R.id.tv);
 //        textView.setText("我会报错吗?");
 //        textView.setTextColor(Color.BLACK);
-        RecyclerView recyclerView = (RecyclerView) mInflate.findViewById(R.id.recycler_view);
+        mRecyclerView = (RecyclerView) mInflate.findViewById(R.id.recycler_view);
 
         //模拟假数据
-        final String[] strings = {"proguard-rules", "CMakeLists.txt", "app.iml", "AndriodManifest.xml", "gradlew" +
-                ".bat", "settings.gradle"};
+//        final String[] strings = {"proguard-rules", "CMakeLists.txt", "app.iml", "AndriodManifest.xml", "gradlew" +
+//                ".bat", "settings.gradle"};
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 //        GridLayoutManager layoutManager = new GridLayoutManager(ResourceUtils.getContext(), 2);
-        recyclerView.setLayoutManager(layoutManager);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(layoutManager);
+        //初始化Adapter
+        initAdapter();
 
-        CommonAdapter adapter = new CommonAdapter<HomeBean.ListBean>(ResourceUtils.getContext(), R.layout
-                .home_item_recyclerview, mList) {
-            @Override
-            protected void convert(ViewHolder textHolder, HomeBean.ListBean listBean, int position) {
-                //获取View
-                TextView textView_name = textHolder.getView(R.id.tv_name);
-                TextView textView_download = textHolder.getView(R.id.textview_download);
-                TextView textView_des = textHolder.getView(R.id.textview_des);
-                TextView textView_size = textHolder.getView(R.id.textview_size);
-                ImageView imageview_download = textHolder.getView(R.id.iv_download_image);
-                ImageView imageview_logo = textHolder.getView(R.id.image_logo);
-                RatingBar ratingBar_stars = textHolder.getView(R.id.ratingbar_star);
 
-                //设置标题
-                textView_name.setText(listBean.getName());
-                textView_name.setTextColor(Color.BLACK);
-                textView_name.setTextSize(16);
-                //设置大小
-                textView_size.setText(android.text.format.Formatter.formatFileSize(ResourceUtils
-                        .getContext(), listBean.getSize()));
-                textView_size.setTextColor(Color.GRAY);
-                //设置介绍
-                textView_des.setText(listBean.getDes());
-                textView_des.setTextColor(Color.GRAY);
-                //靠,设置了cardView背景色后全部文本都要设置字体颜色
-                textView_download.setTextColor(Color.GRAY);
-
-                //设置星星 //
-                ratingBar_stars.setProgress((int) listBean.getStars());
-                ratingBar_stars.setRating(listBean.getStars());
-                //设置图片 //
-                x.image().bind(imageview_logo, Constants.BASE_SERVER + Constants.IMAGE_INTERFACE +
-                        listBean.getIconUrl());
-            }
-        };
-        //设置Adapter
-        recyclerView.setAdapter(adapter);
         return mInflate;
+
+        //常规RecylerView用法
 //        recyclerView.setAdapter(new RecyclerView.Adapter() {
 //            @Override
 //            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -243,5 +275,22 @@ public class HomeFragment extends BaseFragment {
 //                }
 //            }
 //        });
+    }
+
+    private void initAdapter() {
+        mAdapter = new HomePullToRefreshAdapter(R.layout.home_item_recyclerview, mList);
+        //通过调用下面方法设置加载更多的布局,现在是以library导入,不能修改代码,可以通过导入Module方法来修改代码
+        //mAdapter.setLoadMoreView(new SimpleLoadMoreView());
+        //设置加载更多的逻辑
+        mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                //网络访问
+                requestData(mList.size(), LOAD_MORE);
+            }
+        }, mRecyclerView);
+        //设置adapter条目的动画
+        mAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
+        mRecyclerView.setAdapter(mAdapter);
     }
 }
