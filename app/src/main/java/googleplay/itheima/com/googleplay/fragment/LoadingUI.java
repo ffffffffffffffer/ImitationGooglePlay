@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.Button;
 import android.widget.FrameLayout;
 
 import googleplay.itheima.com.googleplay.R;
@@ -44,6 +45,8 @@ public abstract class LoadingUI extends FrameLayout {
 
     //使用标记来确定显示那个View
     private int flag = LOADING.getState();
+    //用于点击重试时用
+    private int error_flag = 0;
     private static final int LOADING_STATE = 0;
     private static final int EMPTY_STATE = 1;
     private static final int ERROR_STATE = 2;
@@ -75,6 +78,16 @@ public abstract class LoadingUI extends FrameLayout {
         }
         if (mErrorView == null) {
             mErrorView = LayoutInflater.from(context).inflate(R.layout.error_view, null, false);
+            Button button = (Button) mErrorView.findViewById(R.id.button_error);
+            button.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mErrorView.setVisibility(View.INVISIBLE);
+                    mLoadingView.setVisibility(View.VISIBLE);
+                    error_flag = 1;
+                    loadData();
+                }
+            });
             addView(mErrorView);
         }
 
@@ -85,7 +98,11 @@ public abstract class LoadingUI extends FrameLayout {
         //View的显示
         mLoadingView.setVisibility(flag == LOADING.getState() ? View.VISIBLE : View.INVISIBLE);
         mEmptyView.setVisibility(flag == EMPTY.getState() ? View.VISIBLE : View.INVISIBLE);
-        mErrorView.setVisibility(flag == ERROR.getState() ? View.VISIBLE : View.INVISIBLE);
+
+        //用于在点击重试时起作用的
+        if (error_flag == 0) {
+            mErrorView.setVisibility(flag == ERROR.getState() ? View.VISIBLE : View.INVISIBLE);
+        }
         if (flag == SUCCESS.getState()) {
             if (mSuccessView == null) {
                 //加载布局
@@ -134,9 +151,10 @@ public abstract class LoadingUI extends FrameLayout {
             return;
         }
         //重新加载
-        flag = LOADING.getState();
-        safeUpdataUI();
-
+        if (flag == LOADING.getState()) {
+            flag = LOADING.getState();
+            safeUpdataUI();
+        }
         //使用线程池
 //        ExecutorService executorService = Executors.newFixedThreadPool(3);
 //        //开启子线程去加载数据
@@ -151,7 +169,9 @@ public abstract class LoadingUI extends FrameLayout {
 //        });
 
         //使用线程管理来创建线程池
-        mTask = new TaskRunnable();
+        if (mTask == null) {
+            mTask = new TaskRunnable();
+        }
         ThreadPoolManager.getLongThread().submit(mTask);
     }
 
@@ -165,6 +185,15 @@ public abstract class LoadingUI extends FrameLayout {
         public void run() {
             LoadingEnum loadingEnum = onInitData();
             flag = loadingEnum.getState();
+            //如果是访问出错的话,就休息一下,不然在点击重试时状态切换的太快
+            if (flag == ERROR.getState() && error_flag == 1) {
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                error_flag = 0;
+            }
             safeUpdataUI();
         }
     }

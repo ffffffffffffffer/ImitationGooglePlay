@@ -23,7 +23,6 @@ import java.util.List;
 import googleplay.itheima.com.googleplay.R;
 import googleplay.itheima.com.googleplay.base.BaseFragment;
 import googleplay.itheima.com.googleplay.bean.HomeBean;
-import googleplay.itheima.com.googleplay.manager.ThreadPoolManager;
 import googleplay.itheima.com.googleplay.utils.Constants;
 import googleplay.itheima.com.googleplay.utils.ResourceUtils;
 import googleplay.itheima.com.googleplay.utils.ToastUtils;
@@ -43,7 +42,7 @@ public class HomeFragment extends BaseFragment {
     private final int accessTime = 5000;
     private LoadingUI.LoadingEnum mSuccess = LoadingUI.LoadingEnum.LOADING;
     private List<HomeBean.ListBean> mList;
-    private TaskRunnable mTask;
+//    private TaskRunnable mTask;
 
     @Override
     public LoadingUI.LoadingEnum initData() {
@@ -63,9 +62,11 @@ public class HomeFragment extends BaseFragment {
                 mSuccess = LoadingUI.LoadingEnum.SUCCESS;
                 gsonDecode(result);
                 //使用线程池
-                mTask = new TaskRunnable();
-                ThreadPoolManager.getLongThread().submit(mTask);
-                ThreadPoolManager.getLongThread().remove(mTask);
+//                mTask = new TaskRunnable();
+//                ThreadPoolManager.getLongThread().submit(mTask);
+
+                //没必再开线程了
+                loadDate();
             }
 
 
@@ -74,6 +75,8 @@ public class HomeFragment extends BaseFragment {
                 ToastUtils.show(getActivity(), "访问失败!" + ex.getMessage());
                 LogUtil.d("访问失败!" + ex.getMessage());
                 mSuccess = LoadingUI.LoadingEnum.ERROR;
+//                mTask = new TaskRunnable();
+//                ThreadPoolManager.getLongThread().submit(mTask);
                 loadDate();
             }
 
@@ -95,23 +98,23 @@ public class HomeFragment extends BaseFragment {
         return mSuccess;
     }
 
-    class TaskRunnable implements Runnable {
-
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(1500);
-                loadDate();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    class TaskRunnable implements Runnable {
+//
+//        @Override
+//        public void run() {
+//                loadDate();
+//            try {
+//                Thread.sleep(1500);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ThreadPoolManager.getLongThread().remove(mTask);
+//        ThreadPoolManager.getLongThread().remove(mTask);
     }
 
     private void gsonDecode(String result) {
