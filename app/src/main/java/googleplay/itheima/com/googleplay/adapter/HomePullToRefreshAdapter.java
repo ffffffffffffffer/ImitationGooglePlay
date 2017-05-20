@@ -31,7 +31,6 @@ public class HomePullToRefreshAdapter extends BaseQuickAdapter<HomeBean.ListBean
     public HomePullToRefreshAdapter(@LayoutRes int layoutResId, @Nullable List<HomeBean.ListBean> data) {
         super(layoutResId, data);
     }
-
     @Override
     protected void convert(BaseViewHolder textHolder, HomeBean.ListBean listBean) {
         //获取View

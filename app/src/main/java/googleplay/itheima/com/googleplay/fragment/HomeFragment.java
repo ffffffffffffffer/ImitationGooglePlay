@@ -1,9 +1,13 @@
 package googleplay.itheima.com.googleplay.fragment;
 
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
@@ -13,6 +17,7 @@ import org.xutils.common.util.LogUtil;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import googleplay.itheima.com.googleplay.R;
@@ -53,6 +58,7 @@ public class HomeFragment extends BaseFragment {
     private RecyclerView mRecyclerView;
     private int mCurrentCounter;
     private boolean isErr;
+    private LinkedList<ImageView> mViews;
 
 //    private TaskRunnable mTask;
 
@@ -279,6 +285,7 @@ public class HomeFragment extends BaseFragment {
 
     private void initAdapter() {
         mAdapter = new HomePullToRefreshAdapter(R.layout.home_item_recyclerview, mList);
+        initViewPager();
         //通过调用下面方法设置加载更多的布局,可以定义一个类去继承LoadMoreView并且实现抽象方法就可以自定义布局了
 //        mAdapter.setLoadMoreView(new SimpleLoadMoreView());
         //设置加载更多的逻辑
@@ -292,5 +299,57 @@ public class HomeFragment extends BaseFragment {
         //设置adapter条目的动画
         mAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    //初始化Viewpager
+
+    /**
+     * 靠,妈的,搞这个Viewpager搞了快一天了,加载后没反应,什么都看不到,但添加除了ViewPager和ListView外的东西居然没问题
+     * 找了N久也找不到问题所在,妈的,直到次日上午坚持最后一次尝试,不行就用普通的方式使用RecyclerView来加载ViewPager,
+     * 复制了BaseRecyclerViewAdapterHelper源码的头布局,靠,居然可以,用对比工具看看和自己哪里设置不同,妈的,没区别,
+     * 不断尝试才知道要为ViewPager设置height才有反应,草了,这个还是我自己设置好再放到BaseRecyclerViewAdapterHelper
+     * 的头布局中的,还以为是它那个布局和自己设置不同,问题还是自己解决的......引以为戒..........在一个方案上不要耗时
+     * 太久了,坚决换方案(有的话)........
+     */
+    private void initViewPager() {
+        mViews = new LinkedList<>();
+        int[] images = {R.mipmap.ic_launcher};
+        for (int i = 0; i < 4; i++) {
+            ImageView imageView = new ImageView(ResourceUtils.getContext());
+            imageView.setImageResource(images[0]);
+            mViews.add(imageView);
+        }
+
+        View view = getActivity().getLayoutInflater().inflate(R.layout.home_item_head, (ViewGroup) mRecyclerView
+                .getParent(), false);
+        ViewPager viewPager = (ViewPager) view.findViewById(R.id.vp);
+        viewPager.setAdapter(new ViewpagerAdapter());
+
+        mAdapter.setHeaderView(view);
+    }
+
+    private class ViewpagerAdapter extends PagerAdapter {
+
+        @Override
+        public int getCount() {
+            return mViews.size();
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            container.addView(mViews.get(position));
+            return mViews.get(position);
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+//            super.destroyItem(container, position, object);
+            container.removeView((View) object);
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
     }
 }
