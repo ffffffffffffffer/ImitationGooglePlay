@@ -16,6 +16,7 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import googleplay.itheima.com.googleplay.R;
+import googleplay.itheima.com.googleplay.ZoomOutPageTransformer;
 import googleplay.itheima.com.googleplay.base.BaseActivity;
 import googleplay.itheima.com.googleplay.fragment.FragmentFactory;
 
@@ -62,8 +63,8 @@ public class MainActivity extends BaseActivity {
     private void initPaper() {
         //获取tab数据
         final String[] tabArray = getResources().getStringArray(R.array.paper_tab);
-
-
+        //加入Viewpager切换动画
+        mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public void destroyItem(ViewGroup container, int position, Object object) {

@@ -21,6 +21,7 @@ import org.xutils.x;
 
 import java.util.List;
 
+import googleplay.itheima.com.googleplay.DepthPageTransformer;
 import googleplay.itheima.com.googleplay.R;
 import googleplay.itheima.com.googleplay.adapter.HomePullToRefreshAdapter;
 import googleplay.itheima.com.googleplay.base.BaseFragment;
@@ -327,6 +328,9 @@ public class HomeFragment extends BaseFragment {
 
         mViewPager = (ViewPager) view.findViewById(R.id.vp);
         mViewPager.setAdapter(new ViewpagerAdapter());
+
+        //加入google提供的切换动画
+        mViewPager.setPageTransformer(true, new DepthPageTransformer());
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
