@@ -41,4 +41,9 @@ public class ResourceUtils {
         getHandler().post(task);
     }
 
+    //执行延时post
+    public static void postDelayed(Runnable task, int delayed) {
+        getHandler().postDelayed(task, delayed);
+    }
+
 }

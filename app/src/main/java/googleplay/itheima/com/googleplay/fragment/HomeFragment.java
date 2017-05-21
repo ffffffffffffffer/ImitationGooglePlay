@@ -4,7 +4,9 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,7 +19,6 @@ import org.xutils.common.util.LogUtil;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import googleplay.itheima.com.googleplay.R;
@@ -27,6 +28,7 @@ import googleplay.itheima.com.googleplay.bean.HomeBean;
 import googleplay.itheima.com.googleplay.utils.Constants;
 import googleplay.itheima.com.googleplay.utils.ResourceUtils;
 import googleplay.itheima.com.googleplay.utils.ToastUtils;
+import googleplay.itheima.com.googleplay.view.DotLieanerLayout;
 
 /**
  * @author TanJJ
@@ -58,7 +60,11 @@ public class HomeFragment extends BaseFragment {
     private RecyclerView mRecyclerView;
     private int mCurrentCounter;
     private boolean isErr;
-    private LinkedList<ImageView> mViews;
+    private SparseArray<ImageView> mViews;
+    private HomeBean mHomeBean;
+    private int mViewPagerPostion;
+    private ViewPager mViewPager;
+    private AutoViewPagerDelayed mViewPagerDelayed;
 
 //    private TaskRunnable mTask;
 
@@ -152,8 +158,8 @@ public class HomeFragment extends BaseFragment {
      */
     private void gsonDecode(String result, int state) {
         Gson gson = new Gson();
-        final HomeBean homeBean = gson.fromJson(result, HomeBean.class);
-        final List<HomeBean.ListBean> list = homeBean.getList();
+        mHomeBean = gson.fromJson(result, HomeBean.class);
+        final List<HomeBean.ListBean> list = mHomeBean.getList();
         if (state == LOADING_DATA) {
             mList = list;
         } else if (state == LOAD_MORE) {
@@ -312,38 +318,101 @@ public class HomeFragment extends BaseFragment {
      * 太久了,坚决换方案(有的话)........
      */
     private void initViewPager() {
-        mViews = new LinkedList<>();
-        int[] images = {R.mipmap.ic_launcher};
-        for (int i = 0; i < 4; i++) {
-            ImageView imageView = new ImageView(ResourceUtils.getContext());
-            imageView.setImageResource(images[0]);
-            mViews.add(imageView);
-        }
 
         View view = getActivity().getLayoutInflater().inflate(R.layout.home_item_head, (ViewGroup) mRecyclerView
                 .getParent(), false);
-        ViewPager viewPager = (ViewPager) view.findViewById(R.id.vp);
-        viewPager.setAdapter(new ViewpagerAdapter());
+
+        final DotLieanerLayout linearLayout = (DotLieanerLayout) view.findViewById(R.id.dll);
+        linearLayout.initImageView(mHomeBean.getPicture().size());
+
+        mViewPager = (ViewPager) view.findViewById(R.id.vp);
+        mViewPager.setAdapter(new ViewpagerAdapter());
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mViewPagerPostion = position;
+                linearLayout.changeImageView(position % mHomeBean.getPicture().size());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        //自动轮播
+        autoPlayViewPager();
 
         mAdapter.setHeaderView(view);
+    }
+
+    private void autoPlayViewPager() {
+        //设置viewpager触摸事件
+        mViewPager.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        stopViewPagerAuto();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        startViewPagerAuto();
+                        break;
+                }
+
+
+                return false;
+            }
+        });
+
+        mViewPagerDelayed = new AutoViewPagerDelayed();
+        ResourceUtils.postDelayed(mViewPagerDelayed, 1500);
+    }
+
+    private class AutoViewPagerDelayed implements Runnable {
+        @Override
+        public void run() {
+            mViewPager.setCurrentItem(++mViewPagerPostion);
+
+            //递归
+            ResourceUtils.postDelayed(this, 1500);
+        }
+    }
+
+    private void stopViewPagerAuto() {
+        ResourceUtils.getHandler().removeCallbacks(mViewPagerDelayed);
+    }
+
+    private void startViewPagerAuto() {
+        autoPlayViewPager();
     }
 
     private class ViewpagerAdapter extends PagerAdapter {
 
         @Override
         public int getCount() {
-            return mViews.size();
+            return Integer.MAX_VALUE;
         }
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            container.addView(mViews.get(position));
-            return mViews.get(position);
+            position = position % mHomeBean.getPicture().size();
+            ImageView imageView = new ImageView(ResourceUtils.getContext());
+            container.addView(imageView);
+            //加载图片
+            x.image().bind(imageView, Constants.BASE_SERVER + Constants.IMAGE_INTERFACE + mHomeBean.getPicture().get
+                    (position));
+            return imageView;
         }
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-//            super.destroyItem(container, position, object);
             container.removeView((View) object);
         }
 
