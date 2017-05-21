@@ -15,7 +15,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
 
 import org.xutils.common.Callback;
-import org.xutils.common.util.LogUtil;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
@@ -107,7 +106,7 @@ public class HomeFragment extends BaseFragment {
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
                 ToastUtils.show(getActivity(), "访问失败!" + ex.getMessage());
-                LogUtil.d("访问失败!" + ex.getMessage());
+//                LogUtil.d("访问失败!" + ex.getMessage());
                 mSuccess = LoadingUI.LoadingEnum.ERROR;
 //                mTask = new TaskRunnable();
 //                ThreadPoolManager.getLongThread().submit(mTask);
