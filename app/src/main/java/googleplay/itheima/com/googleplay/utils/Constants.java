@@ -16,5 +16,6 @@ public interface Constants {
     String GAME_INTERFACE = "game?index=";
     String SUBJECT_INTERFACE = "subject?index=";
     String HOT_INTERFACE = "hot?index=";
+    String CATOGERY_INTERFACE = "category?index=";
     String IMAGE_INTERFACE = "image?name=";
 }

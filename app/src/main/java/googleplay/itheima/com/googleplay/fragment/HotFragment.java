@@ -37,8 +37,6 @@ import googleplay.itheima.com.googleplay.view.FlowLayout;
  */
 
 public class HotFragment extends BaseFragment {
-    //总共要加载的条目
-    private static final int TOTAL_COUNTER = 60;
     //HomeView
     private String serverAddress = Constants.BASE_SERVER + Constants.HOT_INTERFACE;
     private final int accessTime = 5000;

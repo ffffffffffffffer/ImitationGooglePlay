@@ -36,7 +36,7 @@ public class FragmentFactory {
                     mSparseArray.append(position, new HomeFragment());
                     break;
                 case 5:
-                    mSparseArray.append(position, new HomeFragment());
+                    mSparseArray.append(position, new CategoryFragment());
                     break;
                 case 6:
                     mSparseArray.append(position, new HotFragment());
