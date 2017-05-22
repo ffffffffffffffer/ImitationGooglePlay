@@ -30,7 +30,7 @@ public class FragmentFactory {
                     mSparseArray.append(position, new GameFragment());
                     break;
                 case 3:
-                    mSparseArray.append(position, new HomeFragment());
+                    mSparseArray.append(position, new SubjectFragment());
                     break;
                 case 4:
                     mSparseArray.append(position, new HomeFragment());
