@@ -3,6 +3,7 @@ package googleplay.itheima.com.googleplay.utils;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 
 import googleplay.itheima.com.googleplay.BaseApplication;
 
@@ -44,6 +45,21 @@ public class ResourceUtils {
     //执行延时post
     public static void postDelayed(Runnable task, int delayed) {
         getHandler().postDelayed(task, delayed);
+    }
+
+    /**
+     * dp转px
+     *
+     * @param dp
+     *
+     * @return
+     */
+    public static int dp2px(int dp) {
+        // px = dp * (dpi / 160)
+        DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
+        int dpi = metrics.densityDpi;
+
+        return (int) (dp * (dpi / 160f) + 0.5f);
     }
 
 }
