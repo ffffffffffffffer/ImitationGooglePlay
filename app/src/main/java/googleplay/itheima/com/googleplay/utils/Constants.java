@@ -17,5 +17,6 @@ public interface Constants {
     String SUBJECT_INTERFACE = "subject?index=";
     String HOT_INTERFACE = "hot?index=";
     String CATOGERY_INTERFACE = "category?index=";
+    String RECOMMEND_INTERFACE = "recommend?index=";
     String IMAGE_INTERFACE = "image?name=";
 }

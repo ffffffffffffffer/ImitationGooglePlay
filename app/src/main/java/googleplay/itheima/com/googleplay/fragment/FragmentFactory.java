@@ -33,7 +33,7 @@ public class FragmentFactory {
                     mSparseArray.append(position, new SubjectFragment());
                     break;
                 case 4:
-                    mSparseArray.append(position, new HomeFragment());
+                    mSparseArray.append(position, new RecommendFragment());
                     break;
                 case 5:
                     mSparseArray.append(position, new CategoryFragment());
