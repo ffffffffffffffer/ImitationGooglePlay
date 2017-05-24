@@ -1,5 +1,6 @@
 package googleplay.itheima.com.googleplay.fragment;
 
+import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +16,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
 
 import org.xutils.common.Callback;
+import org.xutils.common.util.LogUtil;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
@@ -22,6 +24,7 @@ import java.util.List;
 
 import googleplay.itheima.com.googleplay.DepthPageTransformer;
 import googleplay.itheima.com.googleplay.R;
+import googleplay.itheima.com.googleplay.activity.AppDetailActivity;
 import googleplay.itheima.com.googleplay.adapter.HomePullToRefreshAdapter;
 import googleplay.itheima.com.googleplay.base.BaseFragment;
 import googleplay.itheima.com.googleplay.bean.HomeBean;
@@ -304,6 +307,22 @@ public class HomeFragment extends BaseFragment {
         }, mRecyclerView);
         //设置adapter条目的动画
         mAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
+        mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                if (view.getId() == R.id.home_item_linearLayout) {
+                    //跳转到详细界面
+                    Intent intent = new Intent(getActivity(), AppDetailActivity.class);
+                    intent.putExtra("name", mList.get(position).getName());
+                    intent.putExtra("iconUrl", mList.get(position).getIconUrl());
+                    getActivity().startActivity(intent);
+                    LogUtil.e("点击了 LinearLayout 1 " + position);
+                } else {
+                    LogUtil.e("点击了 LinearLayout 2" + position);
+
+                }
+            }
+        });
         mRecyclerView.setAdapter(mAdapter);
     }
 

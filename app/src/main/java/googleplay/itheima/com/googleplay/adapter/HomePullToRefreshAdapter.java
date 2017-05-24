@@ -33,6 +33,8 @@ public class HomePullToRefreshAdapter extends BaseQuickAdapter<HomeBean.ListBean
     }
     @Override
     protected void convert(BaseViewHolder textHolder, HomeBean.ListBean listBean) {
+        textHolder.addOnClickListener(R.id.home_item_linearLayout).addOnClickListener(R.id
+                .home_item_download_linearLayout);
         //获取View
         TextView textView_name = textHolder.getView(R.id.tv_name);
         TextView textView_download = textHolder.getView(R.id.textview_download);

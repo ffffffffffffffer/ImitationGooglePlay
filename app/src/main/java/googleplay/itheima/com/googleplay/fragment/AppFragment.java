@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.xutils.common.Callback;
+import org.xutils.common.util.LogUtil;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
@@ -219,6 +220,12 @@ public class AppFragment extends BaseFragment {
         }, mRecyclerView);
         //设置adapter条目的动画
         mAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
+        mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                LogUtil.e("点击了 " + position);
+            }
+        });
         mRecyclerView.setAdapter(mAdapter);
     }
 }

@@ -14,6 +14,7 @@
     >
 
     <LinearLayout
+        android:id="@+id/home_item_linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -43,10 +44,10 @@
                     android:text="@string/load_error"/>
 
                 <RatingBar
-                    android:isIndicator="true"
                     android:id="@+id/ratingbar_star"
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
+                    android:isIndicator="true"
                     android:numStars="5"
                     android:paddingTop="5dp"
                     android:progressDrawable="@drawable/ratingbar_zidingyi_full"
@@ -60,6 +61,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/home_item_download_linearLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -91,10 +93,10 @@
             android:background="#50000000"/>
 
         <TextView
-            android:ellipsize="end"
             android:id="@+id/textview_des"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:maxLines="1"
             android:padding="5dp"
             android:text="蘑菇街是国内最受年轻女性喜爱的购物平台，每天由专业时尚编辑为你搜罗最新最时尚的热"/>

@@ -3,6 +3,10 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
     <string name="load_error">加载失败,点击重试</string>
+    <!--详情界面信息-->
+    <string name="detail_saving">收藏</string>
+    <string name="detail_download">下载</string>
+    <string name="detail_shard">分享</string>
     <string-array name="paper_tab">
         <item>首页</item>
         <item>应用</item>

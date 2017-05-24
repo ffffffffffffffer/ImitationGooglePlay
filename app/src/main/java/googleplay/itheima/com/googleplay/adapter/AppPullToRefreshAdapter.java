@@ -36,6 +36,8 @@ public class AppPullToRefreshAdapter extends BaseQuickAdapter<AppBean, BaseViewH
     protected void convert(BaseViewHolder textHolder, AppBean listBean) {
         //获取View
         TextView textView_name = textHolder.getView(R.id.tv_name);
+        textHolder.addOnClickListener(R.id.home_item_linearLayout).addOnClickListener(R.id
+                .home_item_download_linearLayout);
         TextView textView_download = textHolder.getView(R.id.textview_download);
         TextView textView_des = textHolder.getView(R.id.textview_des);
         TextView textView_size = textHolder.getView(R.id.textview_size);
