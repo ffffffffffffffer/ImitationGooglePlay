@@ -6,10 +6,15 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import org.xutils.common.Callback;
+import org.xutils.common.util.LogUtil;
+import org.xutils.http.RequestParams;
 import org.xutils.image.ImageOptions;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
@@ -18,6 +23,8 @@ import java.io.File;
 
 import googleplay.itheima.com.googleplay.R;
 import googleplay.itheima.com.googleplay.base.BaseActivity;
+import googleplay.itheima.com.googleplay.bean.AppDetailInfoBean;
+import googleplay.itheima.com.googleplay.holder.AppDetailInfoHolder;
 import googleplay.itheima.com.googleplay.utils.Constants;
 import googleplay.itheima.com.googleplay.utils.ResourceUtils;
 
@@ -36,28 +43,56 @@ public class AppDetailActivity extends BaseActivity {
     Button mImageView_navigation;
     @ViewInject(R.id.detail_textView)
     TextView mTextView;
+    @ViewInject(R.id.detail_info)
+    FrameLayout mFrameLayout_info;
+    @ViewInject(R.id.detail_safe)
+    FrameLayout mFrameLayout_safe;
+    @ViewInject(R.id.detail_photo)
+    FrameLayout mFrameLayout_photo;
+    @ViewInject(R.id.detail_des)
+    FrameLayout mFrameLayout_des;
+    private Intent mIntent;
+
+    private static final String appLocalPhotoUrl = Constants.BASE_SERVER + Constants.IMAGE_INTERFACE;
+    private static final String appDetailUrl = Constants.BASE_SERVER + Constants.DETAIL_INTERFACE;
+    private String mIconUrl;
+    private String mPackageName;
+    //超时时间
+    private static final int accessTime = 5000;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_detail);
         initData();
+        loadData();
+    }
+
+    private void initView(AppDetailInfoBean mAppDetailInfoBean) {
+//        //获取Detail的数据
+//        AppDetailProtocol appDetailProtocol = new AppDetailProtocol(mPackageName);
+//        mAppDetailInfoBean = appDetailProtocol.loadData();
+        //添加应用详情
+        AppDetailInfoHolder appDetailHolder = new AppDetailInfoHolder();
+        mFrameLayout_info.addView(appDetailHolder.getRootView());
+        appDetailHolder.setData(mAppDetailInfoBean);
+
     }
 
     private void initData() {
         x.view().inject(this);
         //获取传递过来的数据
-        Intent intent = getIntent();
+        mIntent = getIntent();
         String name = getResources().getString(R.string.app_name);
-        String iconUrl = null;
-        if (intent != null) {
-            name = intent.getStringExtra("name");
-            iconUrl = intent.getStringExtra("iconUrl");
+        if (mIntent != null) {
+            mPackageName = mIntent.getStringExtra("packageName");
+            name = mIntent.getStringExtra("name");
+            mIconUrl = mIntent.getStringExtra("iconUrl");
         }
         //设置标题
         mTextView.setText(name);
         //加载上一级保存在本地的图片
-        x.image().loadFile(Constants.BASE_SERVER + Constants.IMAGE_INTERFACE + iconUrl, ImageOptions.DEFAULT, new
+        x.image().loadFile(appLocalPhotoUrl + mIconUrl, ImageOptions.DEFAULT, new
                 Callback.CacheCallback<File>() {
                     @Override
                     public boolean onCache(File result) {
@@ -93,4 +128,53 @@ public class AppDetailActivity extends BaseActivity {
             }
         });
     }
+
+    public void loadData() {
+        //网络请求
+        RequestParams entity = new RequestParams(appDetailUrl + mPackageName);
+        entity.setConnectTimeout(accessTime);
+        entity.setReadTimeout(accessTime);
+        x.http().get(entity, new Callback.CacheCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                gsonParse(result);
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+//                ToastUtils.show(ResourceUtils.getContext().getap.getContext(), "访问失败!" + ex.getMessage());
+                LogUtil.d("访问失败!" + ex.getMessage());
+//                mTask = new TaskRunnable();
+//                ThreadPoolManager.getLongThread().submit(mTask);
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+
+            @Override
+            public boolean onCache(String result) {
+                return false;
+            }
+        });
+    }
+
+    private void gsonParse(String result) {
+        Gson gson = new Gson();
+        //获取T的类型
+        //##############在不知道具体由什么Bean去解析时,使用以下方式获取##############
+//        ParameterizedType type = (ParameterizedType) this.getClass().getGenericSuperclass();
+//        Type type1 = type.getActualTypeArguments()[0];
+//        mAppDetailInfoBean = gson.fromJson(result, type1);
+
+        initView(gson.fromJson(result, AppDetailInfoBean.class));
+        //######################################################################
+    }
+
 }

@@ -314,6 +314,7 @@ public class HomeFragment extends BaseFragment {
                     //跳转到详细界面
                     Intent intent = new Intent(getActivity(), AppDetailActivity.class);
                     intent.putExtra("name", mList.get(position).getName());
+                    intent.putExtra("packageName", mList.get(position).getPackageName());
                     intent.putExtra("iconUrl", mList.get(position).getIconUrl());
                     getActivity().startActivity(intent);
                     LogUtil.e("点击了 LinearLayout 1 " + position);

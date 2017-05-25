@@ -10,13 +10,14 @@ package googleplay.itheima.com.googleplay.utils;
 
 public interface Constants {
 
-    String BASE_SERVER = "http://192.168.1.6:8080/GooglePlayServer/";
+    String BASE_SERVER = "http://192.168.1.102:8080/GooglePlayServer/";
     String HOME_INTERFACE = "home?index=";
     String APP_INTERFACE = "app?index=";
     String GAME_INTERFACE = "game?index=";
     String SUBJECT_INTERFACE = "subject?index=";
     String HOT_INTERFACE = "hot?index=";
-    String CATOGERY_INTERFACE = "category?index=";
+    String CATEGORY_INTERFACE = "category?index=";
+    String DETAIL_INTERFACE = "detail?packageName=";
     String RECOMMEND_INTERFACE = "recommend?index=";
     String IMAGE_INTERFACE = "image?name=";
 }

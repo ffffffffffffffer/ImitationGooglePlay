@@ -46,7 +46,7 @@
                 <RatingBar
                     android:id="@+id/ratingbar_star"
                     android:layout_width="wrap_content"
-                    android:layout_height="25dp"
+                    android:layout_height="@dimen/ratingBar_height"
                     android:isIndicator="true"
                     android:numStars="5"
                     android:paddingTop="5dp"

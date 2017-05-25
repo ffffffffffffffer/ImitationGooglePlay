@@ -1,6 +1,7 @@
 package googleplay.itheima.com.googleplay.utils;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.DisplayMetrics;
@@ -20,6 +21,11 @@ public class ResourceUtils {
     //获取全局Context
     public static Context getContext() {
         return BaseApplication.getContext();
+    }
+
+    //获取Resources
+    public static Resources getResource() {
+        return BaseApplication.getContext().getResources();
     }
 
     //获取图片资源
