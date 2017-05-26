@@ -34,12 +34,12 @@ import googleplay.itheima.com.googleplay.utils.ToastUtils;
  * @time 2017/5/22 14:28
  * @ProjectName GooglePlay
  * @PackageName googleplay.itheima.com.googleplay.fragment
- * @des TODO
+ * @des 分类界面
  */
 
 public class CategoryFragment extends BaseFragment {
     //HomeView
-    private String serverAddress = Constants.BASE_SERVER + Constants.CATOGERY_INTERFACE;
+    private String serverAddress = Constants.BASE_SERVER + Constants.CATEGORY_INTERFACE;
     private final int accessTime = 5000;
     //加载更多时间
     private LoadingUI.LoadingEnum mSuccess = LoadingUI.LoadingEnum.LOADING;

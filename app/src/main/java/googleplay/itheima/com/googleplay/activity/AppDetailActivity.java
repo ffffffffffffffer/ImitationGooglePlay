@@ -25,6 +25,7 @@ import googleplay.itheima.com.googleplay.R;
 import googleplay.itheima.com.googleplay.base.BaseActivity;
 import googleplay.itheima.com.googleplay.bean.AppDetailInfoBean;
 import googleplay.itheima.com.googleplay.holder.AppDetailInfoHolder;
+import googleplay.itheima.com.googleplay.holder.AppDetailSafeHolder;
 import googleplay.itheima.com.googleplay.utils.Constants;
 import googleplay.itheima.com.googleplay.utils.ResourceUtils;
 
@@ -33,7 +34,7 @@ import googleplay.itheima.com.googleplay.utils.ResourceUtils;
  * @time 2017/5/22 22:06
  * @ProjectName GooglePlay
  * @PackageName googleplay.itheima.com.googleplay.activity
- * @des TODO
+ * @des 详情界面的Activity
  */
 
 public class AppDetailActivity extends BaseActivity {
@@ -73,9 +74,13 @@ public class AppDetailActivity extends BaseActivity {
 //        AppDetailProtocol appDetailProtocol = new AppDetailProtocol(mPackageName);
 //        mAppDetailInfoBean = appDetailProtocol.loadData();
         //添加应用详情
-        AppDetailInfoHolder appDetailHolder = new AppDetailInfoHolder();
-        mFrameLayout_info.addView(appDetailHolder.getRootView());
-        appDetailHolder.setData(mAppDetailInfoBean);
+        AppDetailInfoHolder appDetailInfosHolder = new AppDetailInfoHolder();
+        mFrameLayout_info.addView(appDetailInfosHolder.getRootView());
+        appDetailInfosHolder.setData(mAppDetailInfoBean);
+        //添加应用安全
+        AppDetailSafeHolder appDetailSafeHolder = new AppDetailSafeHolder();
+        mFrameLayout_safe.addView(appDetailSafeHolder.getRootView());
+        appDetailSafeHolder.setData(mAppDetailInfoBean);
 
     }
 

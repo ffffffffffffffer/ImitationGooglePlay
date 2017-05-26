@@ -161,7 +161,7 @@ public class AppDetailInfoBean {
         this.screen = screen;
     }
 
-    private class SafeBean {
+    public class SafeBean {
         /**
          * safeDes : 已通过安智市场官方认证，是正版软件
          * safeDesColor : 0
