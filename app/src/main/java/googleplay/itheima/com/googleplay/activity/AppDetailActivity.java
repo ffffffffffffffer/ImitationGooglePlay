@@ -24,6 +24,7 @@ import java.io.File;
 import googleplay.itheima.com.googleplay.R;
 import googleplay.itheima.com.googleplay.base.BaseActivity;
 import googleplay.itheima.com.googleplay.bean.AppDetailInfoBean;
+import googleplay.itheima.com.googleplay.holder.AppDetailDesPhotoHolder;
 import googleplay.itheima.com.googleplay.holder.AppDetailInfoHolder;
 import googleplay.itheima.com.googleplay.holder.AppDetailSafeHolder;
 import googleplay.itheima.com.googleplay.utils.Constants;
@@ -81,6 +82,10 @@ public class AppDetailActivity extends BaseActivity {
         AppDetailSafeHolder appDetailSafeHolder = new AppDetailSafeHolder();
         mFrameLayout_safe.addView(appDetailSafeHolder.getRootView());
         appDetailSafeHolder.setData(mAppDetailInfoBean);
+        //添加应用简介图片
+        AppDetailDesPhotoHolder appDetailDesPhotoHolder = new AppDetailDesPhotoHolder(this);
+        mFrameLayout_photo.addView(appDetailDesPhotoHolder.getRootView());
+        appDetailDesPhotoHolder.setData(mAppDetailInfoBean);
 
     }
 
