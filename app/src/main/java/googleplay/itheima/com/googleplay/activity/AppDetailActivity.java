@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -24,6 +25,7 @@ import java.io.File;
 import googleplay.itheima.com.googleplay.R;
 import googleplay.itheima.com.googleplay.base.BaseActivity;
 import googleplay.itheima.com.googleplay.bean.AppDetailInfoBean;
+import googleplay.itheima.com.googleplay.holder.AppDetailDesHolder;
 import googleplay.itheima.com.googleplay.holder.AppDetailDesPhotoHolder;
 import googleplay.itheima.com.googleplay.holder.AppDetailInfoHolder;
 import googleplay.itheima.com.googleplay.holder.AppDetailSafeHolder;
@@ -53,6 +55,8 @@ public class AppDetailActivity extends BaseActivity {
     FrameLayout mFrameLayout_photo;
     @ViewInject(R.id.detail_des)
     FrameLayout mFrameLayout_des;
+    @ViewInject(R.id.detail_app_scrollView)
+    ScrollView mScrollView;
     private Intent mIntent;
 
     private static final String appLocalPhotoUrl = Constants.BASE_SERVER + Constants.IMAGE_INTERFACE;
@@ -61,6 +65,7 @@ public class AppDetailActivity extends BaseActivity {
     private String mPackageName;
     //超时时间
     private static final int accessTime = 5000;
+    private AppDetailInfoHolder mAppDetailInfosHolder;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,9 +80,9 @@ public class AppDetailActivity extends BaseActivity {
 //        AppDetailProtocol appDetailProtocol = new AppDetailProtocol(mPackageName);
 //        mAppDetailInfoBean = appDetailProtocol.loadData();
         //添加应用详情
-        AppDetailInfoHolder appDetailInfosHolder = new AppDetailInfoHolder();
-        mFrameLayout_info.addView(appDetailInfosHolder.getRootView());
-        appDetailInfosHolder.setData(mAppDetailInfoBean);
+        mAppDetailInfosHolder = new AppDetailInfoHolder();
+        mFrameLayout_info.addView(mAppDetailInfosHolder.getRootView());
+        mAppDetailInfosHolder.setData(mAppDetailInfoBean);
         //添加应用安全
         AppDetailSafeHolder appDetailSafeHolder = new AppDetailSafeHolder();
         mFrameLayout_safe.addView(appDetailSafeHolder.getRootView());
@@ -86,7 +91,27 @@ public class AppDetailActivity extends BaseActivity {
         AppDetailDesPhotoHolder appDetailDesPhotoHolder = new AppDetailDesPhotoHolder(this);
         mFrameLayout_photo.addView(appDetailDesPhotoHolder.getRootView());
         appDetailDesPhotoHolder.setData(mAppDetailInfoBean);
+        //添加应用简介
+        AppDetailDesHolder appDetailDesHolder = new AppDetailDesHolder(this);
+        mFrameLayout_des.addView(appDetailDesHolder.getRootView());
+        appDetailDesHolder.setData(mAppDetailInfoBean);
 
+    }
+
+    /**
+     * 把ScrollView滚动到底部
+     *
+     * @return
+     */
+    public void scrollView2Up() {
+        ResourceUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mScrollView != null) {
+                    mScrollView.fullScroll(View.FOCUS_DOWN);
+                }
+            }
+        });
     }
 
     private void initData() {

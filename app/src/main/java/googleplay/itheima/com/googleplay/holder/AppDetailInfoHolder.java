@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.xutils.x;
@@ -30,6 +31,7 @@ public class AppDetailInfoHolder extends BaseHolder<AppDetailInfoBean> {
     TextView mTextView_version;
     TextView mTextView_size;
     RatingBar mRatingBar_stars;
+    private ScrollView mScrollView_root;
 
     @Override
     public View initView() {
@@ -47,7 +49,7 @@ public class AppDetailInfoHolder extends BaseHolder<AppDetailInfoBean> {
     @Override
     public void initData(AppDetailInfoBean appDetailInfoBean) {
         //设置数据
-        mTextView_name.setText(appDetailInfoBean.getAuthor());
+        mTextView_name.setText(appDetailInfoBean.getName());
         mRatingBar_stars.setRating(appDetailInfoBean.getStars());
         mTextView_downloads.setText(ResourceUtils.getResource().getString(R.string.detail_info_download,
                 appDetailInfoBean.getDownloadNum()));
@@ -61,5 +63,4 @@ public class AppDetailInfoHolder extends BaseHolder<AppDetailInfoBean> {
         x.image().bind(mImageView_photo, Constants.BASE_SERVER + Constants.IMAGE_INTERFACE + appDetailInfoBean
                 .getIconUrl());
     }
-
 }

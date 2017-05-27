@@ -2,4 +2,5 @@
 <resources>
     <dimen name="drawer_menu_width">150dp</dimen>
     <dimen name="drawer_menu_height">300dp</dimen>
+    <dimen name="detail_app_des">18sp</dimen>
 </resources>
