@@ -25,6 +25,7 @@ import java.io.File;
 import googleplay.itheima.com.googleplay.R;
 import googleplay.itheima.com.googleplay.base.BaseActivity;
 import googleplay.itheima.com.googleplay.bean.AppDetailInfoBean;
+import googleplay.itheima.com.googleplay.holder.AppDetailButtonHolder;
 import googleplay.itheima.com.googleplay.holder.AppDetailDesHolder;
 import googleplay.itheima.com.googleplay.holder.AppDetailDesPhotoHolder;
 import googleplay.itheima.com.googleplay.holder.AppDetailInfoHolder;
@@ -55,6 +56,8 @@ public class AppDetailActivity extends BaseActivity {
     FrameLayout mFrameLayout_photo;
     @ViewInject(R.id.detail_des)
     FrameLayout mFrameLayout_des;
+    @ViewInject(R.id.detail_button)
+    FrameLayout mFrameLayout_button;
     @ViewInject(R.id.detail_app_scrollView)
     ScrollView mScrollView;
     private Intent mIntent;
@@ -95,6 +98,10 @@ public class AppDetailActivity extends BaseActivity {
         AppDetailDesHolder appDetailDesHolder = new AppDetailDesHolder(this);
         mFrameLayout_des.addView(appDetailDesHolder.getRootView());
         appDetailDesHolder.setData(mAppDetailInfoBean);
+        //添加应用按钮
+        AppDetailButtonHolder appDetailButtonHolder = new AppDetailButtonHolder(this);
+        mFrameLayout_button.addView(appDetailButtonHolder.getRootView());
+        appDetailButtonHolder.setData(mAppDetailInfoBean);
 
     }
 

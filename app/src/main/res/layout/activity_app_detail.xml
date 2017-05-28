@@ -43,7 +43,8 @@
         <ScrollView
             android:id="@+id/detail_app_scrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:background="#E1E1E1">
 
             <LinearLayout
@@ -83,31 +84,11 @@
                     android:background="@drawable/app_detail_info_background"></FrameLayout>
             </LinearLayout>
         </ScrollView>
+
+        <FrameLayout
+            android:id="@+id/detail_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            ></FrameLayout>
     </LinearLayout>
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:background="@drawable/detail_bottom_bg"-->
-    <!--android:orientation="horizontal">-->
-
-    <!--<Button-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_weight="1"-->
-    <!--android:text="@string/detail_saving"/>-->
-
-    <!--<Button-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_weight="3"-->
-    <!--android:text="@string/detail_download"/>-->
-
-    <!--<Button-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_weight="1"-->
-    <!--android:text="@string/detail_shard"/>-->
-    <!--</LinearLayout>-->
 </RelativeLayout>

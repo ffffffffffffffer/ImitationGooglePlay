@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:rect="http://schemas.android.com/apk/res/googleplay.itheima.com.googleplay"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/detail_bottom_bg"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/progress_bg"
+            android:text="@string/detail_saving"
+            android:textSize="16dp"/>
+
+        <googleplay.itheima.com.googleplay.view.CustomProgressRectView
+            android:id="@+id/detail_app_button_download"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="3"
+            android:background="@drawable/app_detail_download_btn"
+            android:textSize="16dp"
+            rect:backColor="@color/colorRectProgress"
+            />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/progress_bg"
+            android:text="@string/detail_shard"
+            android:textSize="16dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/app_detail_download_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/detail_download"
+        android:textSize="16sp"
+        />
+</RelativeLayout>
