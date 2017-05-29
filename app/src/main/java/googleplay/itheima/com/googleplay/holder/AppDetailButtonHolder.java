@@ -40,6 +40,22 @@ public class AppDetailButtonHolder extends BaseHolder<AppDetailInfoBean> {
     @Override
     public void initData(final AppDetailInfoBean appDetailInfoBean) {
         final DownloadUI downloadUI = new DownloadUI(appDetailInfoBean.getPackageName());
+        //监听状态改变
+        downloadUI.setChangeStateListener(new DownloadUI.StateChangeListener() {
+            @Override
+            public void setChangeState(String stateString) {
+                mDownload_progress.setText(stateString);
+                mDownload_button.setProgress(0);
+            }
+
+            @Override
+            public void downloadingInfo(long total, long current, boolean isDownloading) {
+                //下载进度
+                int currentProgress = (int) (current * 100 / total + 0.5f);
+                mDownload_button.setProgress(currentProgress);
+                mDownload_progress.setText(currentProgress + " %");
+            }
+        });
         mDownload_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,22 +63,6 @@ public class AppDetailButtonHolder extends BaseHolder<AppDetailInfoBean> {
                 downloadUI.setUrlApk(appDetailInfoBean.getDownloadUrl());
                 //改变显示状态
                 downloadUI.changeState(activity);
-                //监听状态改变
-                downloadUI.setChangeStateListener(new DownloadUI.StateChangeListener() {
-                    @Override
-                    public void setChangeState(String stateString) {
-                        mDownload_progress.setText(stateString);
-                        mDownload_button.setProgress(0);
-                    }
-
-                    @Override
-                    public void downloadingInfo(long total, long current, boolean isDownloading) {
-                        //下载进度
-                        int currentProgress = (int) (current * 100 / total + 0.5f);
-                        mDownload_button.setProgress(currentProgress);
-                        mDownload_progress.setText(currentProgress + " %");
-                    }
-                });
             }
         });
     }

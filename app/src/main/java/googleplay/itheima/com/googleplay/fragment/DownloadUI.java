@@ -2,22 +2,24 @@ package googleplay.itheima.com.googleplay.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 
-import org.xutils.common.Callback;
 import org.xutils.common.util.LogUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import googleplay.itheima.com.googleplay.activity.AppDetailActivity;
 import googleplay.itheima.com.googleplay.manager.ThreadPoolManager;
 import googleplay.itheima.com.googleplay.utils.Constants;
 import googleplay.itheima.com.googleplay.utils.FileUtils;
 import googleplay.itheima.com.googleplay.utils.ResourceUtils;
+import googleplay.itheima.com.googleplay.utils.SharedPreferencesUtils;
 import googleplay.itheima.com.googleplay.utils.ToastUtils;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
@@ -42,17 +44,40 @@ public class DownloadUI {
     private static int NO_NETWORK = 4;
     private static int DOWNLOADED = 5;
     private static int INSTALLED = 6;
-    private final String packageName;
+    private String packageName;
     private String apkUrl;
     private StateChangeListener stateChangeListener;
-    private Callback.Cancelable mCancelable;
     private String mPath;
-    private final SharedPreferences mSharedPreferences;
+    private final SharedPreferencesUtils mSharedPreferencesUtils;
+    private static final String FINAL_CURRENT = "finalCurrent";
 
     public DownloadUI(String packageName) {
         this.packageName = packageName;
-        mSharedPreferences = ResourceUtils.getContext().getSharedPreferences("", Context
-                .MODE_PRIVATE);
+        mPath = ResourceUtils.getContext().getExternalCacheDir().getPath() + "/apk/" + packageName;
+        mSharedPreferencesUtils = new SharedPreferencesUtils(ResourceUtils.getContext(), packageName);
+        int currentState = mSharedPreferencesUtils.getInt(FINAL_CURRENT, 0);
+        if (currentState != 0) {
+            CURRENT_STATE = currentState;
+            changeStates();
+        }
+        checkApp(ResourceUtils.getContext());
+    }
+
+    /**
+     * 检测当前包是否已经安装过
+     *
+     * @param context
+     */
+    private void checkApp(Context context) {
+        List<PackageInfo> installedPackages = context.getPackageManager().getInstalledPackages(PackageManager
+                .GET_ACTIVITIES);
+        for (PackageInfo installedPackage : installedPackages) {
+            if (packageName.equals(installedPackage.packageName)) {
+                CURRENT_STATE = INSTALLED;
+                //安全更新ui
+                changeStates();
+            }
+        }
     }
 
     private Call mExecute;
@@ -66,12 +91,21 @@ public class DownloadUI {
      */
     public void changeState(final AppDetailActivity activity) {
         if (CURRENT_STATE == NONE_STATE || CURRENT_STATE == PAUSE_DOWNLOAD || CURRENT_STATE == NO_NETWORK) {
-            mPath = ResourceUtils.getContext().getExternalCacheDir().getPath() + "/apk/" + packageName;
             File file = new File(mPath);
             long breakPointLong = 0;
             if (!FileUtils.createFile(mPath)) {
                 breakPointLong = file.length();
             }
+            //如果有安装文件,还是完整的话只需要安装不用再次下载
+//            long total = mSharedPreferencesUtils.getLong("total", 0);
+//            if (total != 0) {
+//                if (total == breakPointLong) {
+//                    CURRENT_STATE = DOWNLOADED;
+//                    //安全更新ui
+//                    changeStates();
+//                    return;
+//                }
+//            }
 
             final long[] finalBreakPoint = {breakPointLong};
             ThreadPoolManager.getLongThread().submit(new Runnable() {
@@ -97,6 +131,7 @@ public class DownloadUI {
                         @Override
                         public void onResponse(Call call, Response response) throws IOException {
                             final long total = response.body().contentLength();
+//                            mSharedPreferencesUtils.putLong("total", total);
                             LogUtil.e("total  " + total);
                             InputStream inputStream = response.body().byteStream();
                             FileOutputStream fos = new FileOutputStream(mPath, true);
@@ -204,15 +239,18 @@ public class DownloadUI {
         } else if (CURRENT_STATE == DOWNLOADED) {
             //安装 //
             ToastUtils.show(activity, "安装中");
-            CURRENT_STATE = INSTALLED;
             //安全更新ui
-            changeStates();
+//            CURRENT_STATE = INSTALLED;
+//            changeStates();
             //apk下载完成后，调用系统的安装方法
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.fromFile(new File(mPath)), "application/vnd.android.package-archive");
             activity.startActivity(intent);
         } else if (CURRENT_STATE == INSTALLED) {
-            //打开 // TODO: 2017/5/28
+            //打开 //
+            Intent intent = ResourceUtils.getContext().getPackageManager().getLaunchIntentForPackage
+                    (packageName);
+            ResourceUtils.getContext().startActivity(intent);
             ToastUtils.show(activity, "跳转应用中");
         }
     }
@@ -230,6 +268,8 @@ public class DownloadUI {
     }
 
     private String getStateString(int currentState) {
+        //保存状态,下次打开就可以直接操作
+        mSharedPreferencesUtils.putInt(FINAL_CURRENT, currentState);
         if (currentState == GO_DOWNLOAD) {
             return "去下载";
         } else if (currentState == DOWNLOADING) {
