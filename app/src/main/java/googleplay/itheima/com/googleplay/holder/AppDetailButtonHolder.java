@@ -39,7 +39,7 @@ public class AppDetailButtonHolder extends BaseHolder<AppDetailInfoBean> {
 
     @Override
     public void initData(final AppDetailInfoBean appDetailInfoBean) {
-        final DownloadUI downloadUI = new DownloadUI();
+        final DownloadUI downloadUI = new DownloadUI(appDetailInfoBean.getPackageName());
         mDownload_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
